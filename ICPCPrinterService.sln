@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2036
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICPCPrinterService", "ICPCPrinterService\ICPCPrinterService.csproj", "{8EFCF7A0-3196-4524-9F95-1399489B684B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8EFCF7A0-3196-4524-9F95-1399489B684B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EFCF7A0-3196-4524-9F95-1399489B684B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EFCF7A0-3196-4524-9F95-1399489B684B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EFCF7A0-3196-4524-9F95-1399489B684B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {69B5CA13-5F78-42C5-A99F-1BBB0FA73ECB}
+	EndGlobalSection
+EndGlobal
