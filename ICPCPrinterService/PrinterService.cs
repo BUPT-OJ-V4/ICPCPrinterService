@@ -62,7 +62,7 @@ namespace ICPCPrinterService
 					//len = request.InputStream.Read(buffer, 0, (int)request.ContentLength64);
 					//var str = Encoding.UTF8.GetString(buffer, 0, len);
 					var str = new StreamReader(request.InputStream).ReadToEnd();
-					if (PrintTask.TryParseQueryString(str, out PrintTask printTask))
+					if (PrintTask.TryParseQueryString(str, out PrintTask printTask, true))
 					{
 						_printQueue.Add(printTask);
 						response.Redirect(RedirectPath);

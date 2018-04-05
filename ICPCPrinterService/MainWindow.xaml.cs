@@ -71,6 +71,7 @@ namespace ICPCPrinterService
 
 				pathBox.IsEnabled = false;
 				portBox.IsEnabled = false;
+				redirectBox.IsEnabled = false;
 				startButton.IsEnabled = false;
 				configButton.IsEnabled = false;
 				stopButton.IsEnabled = true;
@@ -105,6 +106,7 @@ namespace ICPCPrinterService
 
 				pathBox.IsEnabled = true;
 				portBox.IsEnabled = true;
+				redirectBox.IsEnabled = false;
 				startButton.IsEnabled = true;
 				configButton.IsEnabled = true;
 				stopButton.IsEnabled = false;
@@ -207,7 +209,7 @@ namespace ICPCPrinterService
 			testTask.Content = Enumerable.Range(0, 20).Select(x => "This is a very long line ").Aggregate((a, b) => a + b) + "\n";
 			testTask.Content += "Here are punctuations\n\"" + @"'[]{}!@#$%^&*()_-+=,./<>?;':\|`~" + "\n";
 			testTask.Content += Enumerable.Range(0, 20).Select(
-				x => Enumerable.Range(0, 30).Select(y => "Wrap to next page ").Aggregate((a, b) => a + b) + "\n"
+				x => Enumerable.Range(0, 30).Select(y => "Go to next page ").Aggregate((a, b) => a + b) + "\n"
 				).Aggregate((a, b) => a + b);
 			PrintHandler(testTask);
 		}
