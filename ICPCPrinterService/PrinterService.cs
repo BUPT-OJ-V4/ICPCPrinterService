@@ -36,6 +36,8 @@ namespace ICPCPrinterService
 
 		public bool IsRunning => _listener.IsListening;
 
+		public int QueueSize => _printQueue.Count;
+
 		public Action<PrintTask> PrintHandler { get; set; }
 
 		//private void LoadPrintFormPage()

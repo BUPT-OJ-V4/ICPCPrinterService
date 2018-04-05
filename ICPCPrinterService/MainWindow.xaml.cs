@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,6 +34,10 @@ namespace ICPCPrinterService
 		private double _printableAreaWidth;
 
 		private Configuration _configuration = new Configuration();
+
+		private Thread _counterThread;
+
+		private int _handledPrintTaskCount = 0;
 
 		public MainWindow()
 		{
@@ -69,6 +74,21 @@ namespace ICPCPrinterService
 				startButton.IsEnabled = false;
 				configButton.IsEnabled = false;
 				stopButton.IsEnabled = true;
+
+				_counterThread = new Thread(() =>
+				{
+					Thread.Sleep(2000);
+					while (_service.IsRunning)
+					{
+						Dispatcher.Invoke(() =>
+						{
+							queueCountLabel.Content = _service.QueueSize;
+							processedCountLabel.Content = _handledPrintTaskCount;
+						});
+						Thread.Sleep(2000);
+					}
+				});
+				_counterThread.Start();
 			}
 			catch (Exception ex)
 			{
@@ -113,11 +133,11 @@ namespace ICPCPrinterService
 				doc.ColumnWidth = _printableAreaWidth;
 				doc.PagePadding = new Thickness(25);
 
-				var header = new Run($"{printTask.UserName} ({printTask.UserNickname})")
+				var header = new Run($"{printTask.Username} ({printTask.UserNickname})")
 				{
 					FontSize = 11
 				};
-				if (_configuration.SeatMap.TryGetValue(printTask.UserName, out var seat))
+				if (_configuration.SeatMap != null && _configuration.SeatMap.TryGetValue(printTask.Username, out var seat))
 				{
 					header.Text += "  " + seat;
 				}
@@ -134,6 +154,7 @@ namespace ICPCPrinterService
 
 				var writer = System.Printing.PrintQueue.CreateXpsDocumentWriter(_printDialog.PrintQueue);
 				writer.Write((doc as IDocumentPaginatorSource).DocumentPaginator);
+				++_handledPrintTaskCount;
 			});
 		}
 
@@ -169,6 +190,32 @@ namespace ICPCPrinterService
 			pathBox.Text = _configuration.ServicePath ?? "/print";
 			portBox.Text = _configuration.Port.ToString();
 			redirectBox.Text = _configuration.RedirectPath ?? "/";
+		}
+
+		private void testPrintButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (!_isPrinterConfigured)
+			{
+				MessageBox.Show("Please setup printing configurations first", "Cannot Start",
+					MessageBoxButton.OK, MessageBoxImage.Warning);
+				return;
+			}
+
+			var testTask = new PrintTask();
+			testTask.Username = "TestUser";
+			testTask.UserNickname = "Test Nickname";
+			testTask.Content = Enumerable.Range(0, 20).Select(x => "This is a very long line ").Aggregate((a, b) => a + b) + "\n";
+			testTask.Content += "Here are punctuations\n\"" + @"'[]{}!@#$%^&*()_-+=,./<>?;':\|`~" + "\n";
+			testTask.Content += Enumerable.Range(0, 20).Select(
+				x => Enumerable.Range(0, 30).Select(y => "Wrap to next page ").Aggregate((a, b) => a + b) + "\n"
+				).Aggregate((a, b) => a + b);
+			PrintHandler(testTask);
+		}
+
+		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			if (_service.IsRunning)
+				_service.Stop();
 		}
 	}
 }

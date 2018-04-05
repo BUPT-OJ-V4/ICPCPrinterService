@@ -13,7 +13,7 @@ namespace ICPCPrinterService
 	public class PrintTask
 	{
 		[JsonProperty(PropertyName = "username")]
-		public string UserName { get; set; }
+		public string Username { get; set; }
 
 		[JsonProperty(PropertyName = "nickname")]
 		public string UserNickname { get; set; }
@@ -48,7 +48,7 @@ namespace ICPCPrinterService
 				}
 				result = new PrintTask();
 				if (data.TryGetValue("username", out var username))
-					result.UserName = username;
+					result.Username = username;
 				if (data.TryGetValue("nickname", out var nickname))
 					result.UserNickname = nickname;
 				if (data.TryGetValue("content", out var content))
