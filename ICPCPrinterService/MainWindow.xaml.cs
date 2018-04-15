@@ -133,7 +133,7 @@ namespace ICPCPrinterService
 			{
 				var doc = new FlowDocument();
 				doc.ColumnWidth = _printableAreaWidth;
-				doc.PagePadding = new Thickness(25);
+				doc.PagePadding = new Thickness(40);
 
 				var header = new Run($"{printTask.Username} ({printTask.UserNickname})")
 				{
