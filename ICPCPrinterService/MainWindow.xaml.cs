@@ -20,10 +20,18 @@ using Microsoft.Win32;
 
 namespace ICPCPrinterService
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
-	public partial class MainWindow : Window
+
+	public class User {
+		[JsonProperty("room")]
+		public string Room { get; set; }
+		[JsonProperty("seat")]
+		public string Seat { get; set; }
+	}
+
+		/// <summary>
+		/// Interaction logic for MainWindow.xaml
+		/// </summary>
+		public partial class MainWindow : Window
 	{
 		private PrinterService _service = new PrinterService();
 
@@ -38,10 +46,18 @@ namespace ICPCPrinterService
 		private Thread _counterThread;
 
 		private int _handledPrintTaskCount = 0;
-
+		private readonly SortedDictionary<string, User> users;
 		public MainWindow()
 		{
 			InitializeComponent();
+			try {
+				var gg = File.ReadAllText(@"sb.json");
+				users = JsonConvert.DeserializeObject<SortedDictionary<string, User>>(gg);
+			} catch (Exception ex) {
+				MessageBox.Show(ex.Message + "\n\n" + ex.StackTrace, "Error",
+					MessageBoxButton.OK, MessageBoxImage.Warning);
+			}
+			
 		}
 
 
@@ -126,7 +142,13 @@ namespace ICPCPrinterService
 				_isPrinterConfigured = true;
 			}
 		}
-
+		private string getZuowei(string user) {
+            if (users.ContainsKey(user)) {
+				return "房间" + users[user].Room + " " + "座位" + users[user].Seat;
+            } else {
+				return "";
+            }
+		}
 		private void PrintHandler(PrintTask printTask)
 		{
 			Dispatcher.Invoke(() =>
@@ -135,7 +157,7 @@ namespace ICPCPrinterService
 				doc.ColumnWidth = _printableAreaWidth;
 				doc.PagePadding = new Thickness(40);
 
-				var header = new Run($"{printTask.Username} ({printTask.UserNickname})")
+				var header = new Run($"{printTask.Username} ({printTask.UserNickname}) {getZuowei(printTask.Username)}")
 				{
 					FontSize = 11
 				};
@@ -219,5 +241,9 @@ namespace ICPCPrinterService
 			if (_service.IsRunning)
 				_service.Stop();
 		}
-	}
+
+        private void portBox_TextChanged(object sender, TextChangedEventArgs e) {
+
+        }
+    }
 }
